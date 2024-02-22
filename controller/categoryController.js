@@ -44,14 +44,148 @@ const controller = {
   async getCategory(req, res) {
     try {
       await db.query(`select * from category`, (err, result) => {
-        if(err){
-          res.status(403).json({status: false, message: err})
-        }else{
-          res.status(200).json({status: true, message: result})
+        if (err) {
+          res.status(403).json({ status: false, message: err });
+        } else {
+          res.status(200).json({ status: true, message: result });
         }
-      })
+      });
     } catch (error) {
-      res.status(500).json({status: false, message: error})
+      res.status(500).json({ status: false, message: error });
+    }
+  },
+
+  async getAllVegetables(req, res) {
+    try {
+      await db.query(`select * from vegetables`, (err, result) => {
+        if (err) {
+          res.status(403).json({ status: false, message: err });
+        } else {
+          if (result.length == 0) {
+            res
+              .status(404)
+              .json({ status: false, message: "Products not found" });
+          } else {
+            res.status(200).json({ status: true, message: result });
+          }
+        }
+      });
+    } catch (error) {
+      res.status(500).json({ status: false, message: error });
+    }
+  },
+
+  async getParticularVegetable(req, res) {
+    try {
+      const { id } = req.params;
+
+      await db.query(
+        `select * from vegetables where id=?`,
+        [id],
+        (err, result) => {
+          if (err) {
+            res.status(403).json({ status: false, message: err });
+          } else {
+            if (result.length == 0) {
+              res
+                .status(404)
+                .json({ status: false, message: "Product not found" });
+            } else {
+              res.status(200).json({ status: true, message: result });
+            }
+          }
+        }
+      );
+    } catch (error) {
+      res.status(500).json({ status: false, message: error });
+    }
+  },
+
+  async getAllSeeds(req, res) {
+    try {
+      await db.query(`select * from seeds`, (err, result) => {
+        if (err) {
+          res.status(403).json({ status: false, message: err });
+        } else {
+          if (result.length == 0) {
+            res
+              .status(404)
+              .json({ status: false, message: "Products not found" });
+          } else {
+            res.status(200).json({ status: true, message: result });
+          }
+        }
+      });
+    } catch (error) {
+      res.status(500).json({ status: false, message: error });
+    }
+  },
+
+  async getParticularSeed(req, res) {
+    try {
+      const { id } = req.params;
+
+      await db.query(`select * from seeds where id=?`, [id], (err, result) => {
+        if (err) {
+          res.status(403).json({ status: false, message: err });
+        } else {
+          if (result.length == 0) {
+            res
+              .status(404)
+              .json({ status: false, message: "Product not found" });
+          } else {
+            res.status(200).json({ status: true, message: result });
+          }
+        }
+      });
+    } catch (error) {
+      res.status(500).json({ status: false, message: error });
+    }
+  },
+
+  async getAllFertilizers(req, res) {
+    try {
+      await db.query(`select * from fertilizer`, (err, result) => {
+        if (err) {
+          res.status(403).json({ status: false, message: err });
+        } else {
+          if (result.length == 0) {
+            res
+              .status(404)
+              .json({ status: false, message: "Product not found" });
+          } else {
+            res.status(200).json({ status: true, message: result });
+          }
+        }
+      });
+    } catch (error) {
+      res.status(500).json({ status: false, message: error });
+    }
+  },
+
+  async getParticularFertilizer(req, res) {
+    try {
+      const { id } = req.params;
+
+      await db.query(
+        `select * from fertilizer where id=?`,
+        [id],
+        (err, result) => {
+          if (err) {
+            res.status(403).json({ status: false, message: err });
+          } else {
+            if (result.length == 0) {
+              res
+                .status(404)
+                .json({ status: false, message: "Product not found" });
+            } else {
+              res.status(200).json({ status: true, message: result });
+            }
+          }
+        }
+      );
+    } catch (error) {
+      res.status(500).json({ status: false, message: error });
     }
   },
 };
