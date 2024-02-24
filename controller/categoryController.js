@@ -75,6 +75,28 @@ const controller = {
     }
   },
 
+  async updateVeggies(req, res) {
+    try {
+      const { id } = req.params
+      const { product_name, in_stock, image, our_price, market_price, ratings, slogan } = req.body
+
+      db.query(`UPDATE vegetables SET product_name=?,in_stock=?,image=?,our_price=?,market_price=?,ratings=?,slogan=? WHERE id=?`,
+        [product_name, in_stock, image, our_price, market_price, ratings, slogan, id], (error, result) => {
+          if (error) {
+            res.status(500).json({ status: false, error });
+          } else {
+            if (result.affectedRows > 0) {
+              res.status(200).json({ status: true, message: 'Updated success', result })
+            } else {
+              res.status(404).json({ status: false, message: 'Product not found.' });
+            }
+          }
+        })
+    } catch (error) {
+      res.status(500).json({ status: false, message: error })
+    }
+  },
+
   async getParticularVegetable(req, res) {
     try {
       const { id } = req.params;
