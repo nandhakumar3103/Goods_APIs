@@ -44,6 +44,7 @@ const controller = {
         ],
         (err, result) => {
           if (err) {
+            console.log(err);
             res.status(401).json({ status: false, message: err });
           } else {
             res.status(200).json({ status: true, message: result });
