@@ -96,7 +96,48 @@ const controller = {
       res.status(500).json({ status: false, message: error })
     }
   },
+  async updateSeeds(req, res) {
+    try {
+      const { id } = req.params
+      const { product_name, in_stock, image, our_price, market_price, ratings, slogan ,slogan1} = req.body
 
+      db.query(`UPDATE seeds SET product_name=?,in_stock=?,image=?,our_price=?,market_price=?,ratings=?,slogan=? ,slogan1=?WHERE id=?`,
+        [product_name, in_stock, image, our_price, market_price, ratings, slogan,slogan1, id], (error, result) => {
+          if (error) {
+            res.status(500).json({ status: false, error });
+          } else {
+            if (result.affectedRows > 0) {
+              res.status(200).json({ status: true, message: 'Updated success', result })
+            } else {
+              res.status(404).json({ status: false, message: 'Product not found.' });
+            }
+          }
+        })
+    } catch (error) {
+      res.status(500).json({ status: false, message: error })
+    }
+  },
+  async updateFertilizer(req, res) {
+    try {
+      const { id } = req.params
+      const { product_name, in_stock, image, our_price, market_price, ratings, slogan ,slogan1} = req.body
+
+      db.query(`UPDATE fertilizer SET product_name=?,in_stock=?,image=?,our_price=?,market_price=?,ratings=?,slogan=? ,slogan1=?WHERE id=?`,
+        [product_name, in_stock, image, our_price, market_price, ratings, slogan,slogan1, id], (error, result) => {
+          if (error) {
+            res.status(500).json({ status: false, error });
+          } else {
+            if (result.affectedRows > 0) {
+              res.status(200).json({ status: true, message: 'Updated success', result })
+            } else {
+              res.status(404).json({ status: false, message: 'Product not found.' });
+            }
+          }
+        })
+    } catch (error) {
+      res.status(500).json({ status: false, message: error })
+    }
+  },
   async getParticularVegetable(req, res) {
     try {
       const { id } = req.params;
