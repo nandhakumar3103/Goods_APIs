@@ -1,5 +1,6 @@
 const db = require("../../connection/db");
 const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 
 const controller = {
   async userRegister(req, res) {
@@ -24,13 +25,11 @@ const controller = {
                 if (err) {
                   res.status(401).json({ status: false, message: err });
                 } else {
-                  res
-                    .status(200)
-                    .send({
-                      status: true,
-                      message: "Registration successful",
-                      data,
-                    });
+                  res.status(200).send({
+                    status: true,
+                    message: "Registration successful",
+                    data,
+                  });
                 }
               }
             );
@@ -43,44 +42,46 @@ const controller = {
   },
 
   login(req, res, next) {
-    const data = req.data;
-    connection.query(
-      "SELECT * FROM `user_register` WHERE  user_email=?",
-      data.email,
-      (error, results) => {
-        if (error) return res.status(500).json({ status: 500, message: error });
-        else if (results.length > 0)
-          connection.query(
-            "SELECT * FROM `user_register` WHERE  user_email=? AND password=?",
-            [data.email, data.password],
-            (error, count) => {
-              if (error)
-                return res.status(500).json({ status: 500, message: error });
-              else if (count.length > 0) {
-                let [user] = results;
-                let Tokenstatus = jwtToken.verify(user.token);
-                if (Tokenstatus == "jwt expired") {
-                  Tokenstatus = jwtToken.token(data.email);
-                  connection.query(
-                    "UPDATE `user_register` SET token=? WHERE  user_email=?",
-                    [Tokenstatus, data.email]
-                  );
-                }
-                return res
+    try {
+      const { user_email, password } = req.body;
+
+      db.query(
+        `select * from user_register where user_email=?`,
+        [user_email],
+        async (err, result) => {
+          if (err) {
+            res.status(403).json({ status: false, message: err });
+          } else {
+            if (result[0].user_email) {
+              const compare = await bcrypt.compare(
+                password,
+                result[0].password
+              );
+
+              if (compare) {
+                const token = jwt.sign({ id: result[0].id }, "abcdefgh", {
+                  expiresIn: "1h",
+                });
+
+                res
                   .status(200)
-                  .json({ status: 200, message: Tokenstatus });
-              } else
-                return res
-                  .status(400)
-                  .json({ status: 400, message: "Kindly check your password" });
+                  .json({ status: true, message: "Login successfull", token });
+              } else {
+                res
+                  .status(401)
+                  .json({ status: false, message: "Incorrect Password" });
+              }
+            } else {
+              res
+                .status(404)
+                .json({ status: false, message: "User doesn't exist" });
             }
-          );
-        else
-          return res
-            .status(404)
-            .json({ status: 404, message: "Email not exists" });
-      }
-    );
+          }
+        }
+      );
+    } catch (error) {
+      res.status(500).json({ status: false, message: error });
+    }
   },
 
   async getUsers(req, res) {
