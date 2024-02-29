@@ -6,8 +6,8 @@ const db = require("./connection/db")
 
 const farmerRouter = require("./router/farmerRouter");
 const categoryRouter = require("./router/categoryRouter");
-const userRoute = require('./router/userRouter');
-
+const userRouter = require('./router/userRouter');
+const orderRouter = require('./router/orderRouter');
 app.use(express.json());
 app.use(
   cors({
@@ -22,7 +22,8 @@ db.connect((err) => {
 
 app.use("/farmer", farmerRouter);
 app.use("/category", categoryRouter);
-app.use("/users", userRoute);
+app.use("/users", userRouter);
+app.use("/order", orderRouter);
 
 app.listen(process.env.PORT || 3001, () => {
   console.log(`Server running in ${process.env.PORT || 3001}`);
