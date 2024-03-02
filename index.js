@@ -8,6 +8,7 @@ const farmerRouter = require("./router/farmerRouter");
 const categoryRouter = require("./router/categoryRouter");
 const userRouter = require('./router/userRouter');
 const orderRouter = require('./router/orderRouter');
+const paymentRoute = require('./router/paymentRouter');
 app.use(express.json());
 app.use(
   cors({
@@ -24,6 +25,7 @@ app.use("/farmer", farmerRouter);
 app.use("/category", categoryRouter);
 app.use("/users", userRouter);
 app.use("/order", orderRouter);
+app.use("", paymentRoute);
 
 app.listen(process.env.PORT || 3001, () => {
   console.log(`Server running in ${process.env.PORT || 3001}`);

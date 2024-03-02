@@ -44,11 +44,7 @@ const controller = {
   login(req, res, next) {
     try {
       const { user_email, password } = req.body;
-
-      db.query(
-        `select * from user_register where user_email=?`,
-        [user_email],
-        async (err, result) => {
+      db.query(`select * from user_register where user_email=?`,[user_email],async (err, result) => {
           if (err) {
             res.status(403).json({ status: false, message: err });
           } else {
@@ -65,7 +61,7 @@ const controller = {
 
                 res
                   .status(200)
-                  .json({ status: true, message: "Login successfull", token });
+                  .json({ status: true, message: "Login successfull", token: token, data: result[0] });
               } else {
                 res
                   .status(401)
